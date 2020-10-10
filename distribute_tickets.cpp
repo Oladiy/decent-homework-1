@@ -1,5 +1,7 @@
 #include <fstream>
+#include <functional>
 #include <getopt.h>
+#include <iomanip>
 #include <iostream>
 #include <random>
 
@@ -18,12 +20,8 @@ struct Options {
 
 unsigned get_ticket_number(const string& name, unsigned amount_of_tickets, unsigned parameter, std::mt19937 *mersenne) {
     unsigned result;
-    unsigned sum = 0;
-    for (const char& c : name) {
-        sum += abs(c);
-    }
-
-    result = sum * parameter ^ (*mersenne)();
+    std::size_t hashed_name = std::hash<string>{}(name);
+    result = hashed_name * parameter ^ (*mersenne)();
     return result % amount_of_tickets + 1;
 }
 
